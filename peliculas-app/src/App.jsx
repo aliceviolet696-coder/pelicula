@@ -1,67 +1,51 @@
 import { useState } from 'react'
 import './App.css'
-
-function Pelicula({ titulo }) {
-
-  const [esFavorita, setEsFavorita] = useState(false);
-
-  return (
-    <div
-      style={{
-        border: esFavorita ? '2px solid gold' : '1px solid gray',
-        borderRadius: '8px',
-        margin: '5px',
-        padding: '10px',
-        backgroundColor: esFavorita ? '#fff9e6' : 'white',
-        cursor: 'pointer'
-      }}
-      onClick={() => setEsFavorita(!esFavorita)}
-    >
-      <p style={{ margin: '0', fontWeight: esFavorita ? 'bold' : 'normal' }}>
-        {titulo} {esFavorita ? "⭐" : ""}
-      </p>
-    </div>
-  );
-}
-
+import { videojuegosIniciales } from './data/videojuegos'
+import TablaVideojuegos from './components/TablaVideojuegos'
 
 function App() {
 
-  const [peliculas, setPeliculas] = useState(['Inception', 'Titanic', 'Avatar', 'Matrix']);
+  const [videojuegos, setVideojuegos] = useState(videojuegosIniciales);
 
-  const [nuevaPelicula, setNuevaPelicula] = useState('');
+  const [nuevoTitulo, setNuevoTitulo] = useState('');
 
-  function agregarPelicula() {
-    if (nuevaPelicula.trim() !== '') {
-      setPeliculas([...peliculas, nuevaPelicula]);
-      setNuevaPelicula('');
+  function agregarVideojuego() {
+    if (nuevoTitulo.trim() !== '') {
+      setVideojuegos([
+        ...videojuegos,
+        {
+          id: Date.now(),
+          titulo: nuevoTitulo,
+          genero: 'Sin definir',
+          plataforma: 'PC',
+          lanzamiento: 2026,
+          precio: 0,
+          disponible: true,
+          progreso: 0
+        }
+      ]);
+      setNuevoTitulo('');
     }
   }
 
   return (
-    <div style={{ maxWidth: '420px', margin: '0 auto', padding: '20px', fontFamily: 'Arial, sans-serif' }}>
-      <h1>Mis Películas Favoritas</h1>
+    <div className="app">
+      <h1>Mis Videojuegos Favoritos</h1>
 
-      <div>
+      <div className="form-agregar">
         <input
           type="text"
-          value={nuevaPelicula}
-          onChange={(e) => setNuevaPelicula(e.target.value)}
-          placeholder="Nueva película"
-          style={{ flex: '1', padding: '8px' }}
+          value={nuevoTitulo}
+          onChange={(e) => setNuevoTitulo(e.target.value)}
+          placeholder="Nuevo videojuego"
         />
 
-        <button
-          onClick={agregarPelicula}
-          style={{ padding: '8px', marginLeft: '5px' }}
-        >
+        <button onClick={agregarVideojuego}>
           Agregar
         </button>
       </div>
 
-      {peliculas.map((pelicula, index) => (
-        <Pelicula key={index} titulo={pelicula} />
-      ))}
+      <TablaVideojuegos videojuegos={videojuegos} />
 
     </div>
   )
